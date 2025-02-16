@@ -1,6 +1,6 @@
 import discord # type: ignore
 import os
-import openpyxl
+import openpyxl # type: ignore
 import atexit
 import random
 import time
