@@ -17,7 +17,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix=".", intents=intents)
 
 # Hardcoded save path
-SAVE_PATH = os.path.expanduser('~/all/axxios/data.xlsx')  # Change this to your desired location
+SAVE_PATH = os.path.expanduser('~/all/data.xlsx')  # Change this to your desired location
 
 @bot.event
 async def on_ready():
