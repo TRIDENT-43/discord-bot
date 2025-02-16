@@ -1,11 +1,11 @@
-import discord
+import discord # type: ignore
 import os
 import openpyxl
 import atexit
 import random
 import time
 import asyncio
-from discord.ext import commands
+from discord.ext import commands # type: ignore
 
 # Load your token securely (replace 'your_token_here' with your actual token)
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -17,7 +17,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix=".", intents=intents)
 
 # Hardcoded save path
-SAVE_PATH = os.path.expanduser('~/all/data.xlsx')  # Change this to your desired location
+SAVE_PATH = os.path.join(os.getcwd(), 'data.xlsx') # Change this to your desired location
 
 @bot.event
 async def on_ready():
@@ -301,6 +301,11 @@ async def exportalluser(ctx):
     
     # Send the final output (if the message is too long consider sending it as a file)
     await ctx.send(final_output)
+
+
+@bot.command()
+async def help(ctx,):
+    await ctx.send(f"'.help': opens this menu. \n'.mansave':manually saves data to the 'data.xlsx' file. \n'.xpno' this is a command ran in a reply to a message, it adds a '0' reaction to the message being reacted to, and adds 0 xp to the original message's author. \n'.xpskl' the same as 'xpno' except it adds a '1' reaction to the original message, and 1 xp to the original message author's data. \n'.xpsty':the same as 'xpno' except it adds a '2' reaction to the original message, and 2 xp to the original message author's data. \n'xpfnd': the same as 'xpno' except it adds a '3' reaction to the original message, and 3 xp to the original message author's data.\n'.exportraw': exports all saved data captured since bot has been restarted (not very usefull in most cases). \n'clearraw' deletes all raw data, but no saved data after user confirmation. \n'exportuser [userid]' exports a specific user's data. \n'.exportalluser': exports all user's data, this is the most usefull command by far.")
 
     
 
