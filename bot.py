@@ -243,7 +243,9 @@ async def clearraw(ctx,):
         await ctx.send("You took too long to respond. Deletion canceled.")
         await confirmation_message.delete()
 
-
+@bot.command()
+async def test(ctx,):
+    await ctx.send("bot is online!")
 
 @bot.command()
 async def exportuser(ctx, userid: int):
