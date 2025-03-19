@@ -85,6 +85,13 @@ bot = MyBot(command_prefix=".", intents=intents)
 async def mansave(ctx,):
     save_data()
 
+@bot.command()
+async def xpfail(ctx):
+    await process_xp_command(ctx, ":regional_indicator_f:", 0, "")
+
+@bot.command()
+async def xpnat(ctx):
+    await process_xp_command(ctx, ":regional_indicator_n:", 0, "")
 
 @bot.command()
 async def xpno(ctx):
@@ -243,7 +250,7 @@ async def exportuser(ctx, username: str):
 
 
 @bot.command()
-async def exportalluser(ctx):
+async def xptotal(ctx):
     # Group the data by user ID
     data_by_user = {}
     for i in range(len(userNameList)):
@@ -277,7 +284,7 @@ async def exportalluser(ctx):
 
 @bot.command()
 async def helpcmd(ctx,):
-    await ctx.send(f"'helpcmd': opens this menu. \n\n'.mansave':manually saves data to the 'data.xlsx' file. \n\n'.xpno' this is a command ran in a reply to a message, it adds a '0' reaction to the message being reacted to, and adds 0 xp to the original message's author. \n\n'.xpskl' the same as 'xpno' except it adds a '1' reaction to the original message, and 1 xp to the original message author's data. \n\n'.xpsty':the same as 'xpno' except it adds a '2' reaction to the original message, and 2 xp to the original message author's data. \n\n'xpfnd': the same as 'xpno' except it adds a '3' reaction to the original message, and 3 xp to the original message author's data.\n\n'.exportraw': exports all saved data captured since bot has been restarted (not very usefull in most cases). \n\n'clearraw' deletes all raw data, but no saved data after user confirmation. \n\n'exportuser [username]' exports a specific user's data. \n\n'.exportalluser': exports all user's data, this is the most usefull command by far.")
+    await ctx.send(f"'helpcmd': opens this menu. \n\n'.mansave':manually saves data to the 'data.xlsx' file. \n\n'.xpno' this is a command ran in a reply to a message, it adds a '0' reaction to the message being reacted to, and adds 0 xp to the original message's author. \n\n'.xpskl' the same as 'xpno' except it adds a '1' reaction to the original message, and 1 xp to the original message author's data. \n\n'.xpsty':the same as 'xpno' except it adds a '2' reaction to the original message, and 2 xp to the original message author's data. \n\n'xpfnd': the same as 'xpno' except it adds a '3' reaction to the original message, and 3 xp to the original message author's data.\n\n'.exportraw': exports all saved data captured since bot has been restarted (not very usefull in most cases). \n\n'clearraw' deletes all raw data, but no saved data after user confirmation. \n\n'exportuser [username]' exports a specific user's data. \n\n'.xptotal': exports all user's data, this is the most usefull command by far.")
 
     
 
