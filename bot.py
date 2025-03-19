@@ -56,8 +56,8 @@ def save_data():
     except Exception as e:
         print(f"Error saving data: {e}")
 
-def updateList(userid, messageid, xptoadd, timestamp):
-    userNameList.append(str(userid))
+def updateList(username, messageid, xptoadd, timestamp):
+    userNameList.append(str(username))
     messageIDList.append(str(messageid.id if isinstance(messageid, discord.Message) else messageid))
     xpFromMessage.append(int(xptoadd))
     commandUseTimestamp.append(str(timestamp))
@@ -133,7 +133,7 @@ async def process_xp_command(ctx, emoji, xp):
 #exports all raw data from the 4 main lists
 @bot.command()
 async def exportraw(ctx,):
-    await ctx.send(f"User id: {userNameList} OG message id {messageIDList} xp: {xpFromMessage} timestamp: {commandUseTimestamp}")
+    await ctx.send(f"Username: {userNameList} OG message id {messageIDList} xp: {xpFromMessage} timestamp: {commandUseTimestamp}")
 
 #clears raw data from the 4 main lists 
 
@@ -178,9 +178,9 @@ async def test(ctx,):
     await ctx.send("bot is online!")
 
 @bot.command()
-async def exportuser(ctx, userid: int):
+async def exportuser(ctx, username: int):
     # This is a list that temporarily stores the other list's index numbers for the specific data requested for export
-    indexListToExport = [i for i, x in enumerate(userNameList) if x == userid]
+    indexListToExport = [i for i, x in enumerate(userNameList) if x == username]
     
     exportdata = []  # Initialize the list outside the loop to store the results
     
@@ -196,9 +196,9 @@ async def exportuser(ctx, userid: int):
     # If there is any data to export, format it for display
     if exportdata:
         formatted_data = "\n".join([f" Timestamp: {data['timestamp']}, XP: {data['xp']}" for data in exportdata])
-        await ctx.send(f"Here is the data for {userid}:\n\n{formatted_data}\n\nTotal XP Gained: {total_xp} ")
+        await ctx.send(f"Here is the data for {username}:\n\n{formatted_data}\n\nTotal XP Gained: {total_xp} ")
     else:
-        await ctx.send(f"No data found for {userid}.")
+        await ctx.send(f"No data found for {username}.")
 
 
 
@@ -237,7 +237,7 @@ async def exportalluser(ctx):
 
 @bot.command()
 async def helpcmd(ctx,):
-    await ctx.send(f"'helpcmd': opens this menu. \n\n'.mansave':manually saves data to the 'data.xlsx' file. \n\n'.xpno' this is a command ran in a reply to a message, it adds a '0' reaction to the message being reacted to, and adds 0 xp to the original message's author. \n\n'.xpskl' the same as 'xpno' except it adds a '1' reaction to the original message, and 1 xp to the original message author's data. \n\n'.xpsty':the same as 'xpno' except it adds a '2' reaction to the original message, and 2 xp to the original message author's data. \n\n'xpfnd': the same as 'xpno' except it adds a '3' reaction to the original message, and 3 xp to the original message author's data.\n\n'.exportraw': exports all saved data captured since bot has been restarted (not very usefull in most cases). \n\n'clearraw' deletes all raw data, but no saved data after user confirmation. \n\n'exportuser [userid]' exports a specific user's data. \n\n'.exportalluser': exports all user's data, this is the most usefull command by far.")
+    await ctx.send(f"'helpcmd': opens this menu. \n\n'.mansave':manually saves data to the 'data.xlsx' file. \n\n'.xpno' this is a command ran in a reply to a message, it adds a '0' reaction to the message being reacted to, and adds 0 xp to the original message's author. \n\n'.xpskl' the same as 'xpno' except it adds a '1' reaction to the original message, and 1 xp to the original message author's data. \n\n'.xpsty':the same as 'xpno' except it adds a '2' reaction to the original message, and 2 xp to the original message author's data. \n\n'xpfnd': the same as 'xpno' except it adds a '3' reaction to the original message, and 3 xp to the original message author's data.\n\n'.exportraw': exports all saved data captured since bot has been restarted (not very usefull in most cases). \n\n'clearraw' deletes all raw data, but no saved data after user confirmation. \n\n'exportuser [username]' exports a specific user's data. \n\n'.exportalluser': exports all user's data, this is the most usefull command by far.")
 
     
 
