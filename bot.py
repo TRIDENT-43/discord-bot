@@ -5,6 +5,7 @@ import atexit
 import random
 import time
 import asyncio
+import emoji
 from discord.ext import commands # type: ignore
 
 # Load your token securely (replace 'your_token_here' with your actual token)
@@ -130,21 +131,28 @@ async def process_xp_command(ctx, emoji1, xp, emoji2):
     else:
         await ctx.send("You need to reply to a message first!")
 
-async def add_reaction(message, emoji):
-    # Check if emoji is in the ":name:" format (custom emoji)
-    if emoji.startswith(":") and emoji.endswith(":"):
-        emoji_name = emoji.strip(":")
-        
-        # Search for the emoji in the bot's available emojis
+async def add_reaction(message, emoji_input):
+    # Check if emoji is in the ":name:" format
+    if emoji_input.startswith(":") and emoji_input.endswith(":"):
+        emoji_name = emoji_input.strip(":")
+
+        # Attempt to find a custom emoji in the guild
         custom_emoji = discord.utils.get(message.guild.emojis, name=emoji_name)
         
         if custom_emoji:
+            # Custom emoji found, add it
             await message.add_reaction(custom_emoji)
         else:
-            print(f"Custom emoji :{emoji_name}: not found.")
+            # Check if it's a Unicode emoji using the 'emoji' package
+            unicode_emoji = emoji.emojize(f":{emoji_name}:", use_aliases=True)
+            
+            if unicode_emoji != f":{emoji_name}:":
+                await message.add_reaction(unicode_emoji)
+            else:
+                await message.channel.send(f"Emoji `{emoji_input}` not found as custom or Unicode emoji.")
     else:
-        # Assume it's a Unicode emoji
-        await message.add_reaction(emoji)
+        # Emoji input isn't in ":name:" format, treat it as Unicode directly
+        await message.add_reaction(emoji_input)
 
 
 
