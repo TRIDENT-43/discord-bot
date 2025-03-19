@@ -131,27 +131,29 @@ async def process_xp_command(ctx, emoji1, xp, emoji2):
     else:
         await ctx.send("You need to reply to a message first!")
 
+import emoji  # Ensure you install the 'emoji' package with `pip install emoji`
+
 async def add_reaction(message, emoji_input):
     # Check if emoji is in the ":name:" format
     if emoji_input.startswith(":") and emoji_input.endswith(":"):
         emoji_name = emoji_input.strip(":")
 
-        # Attempt to find a custom emoji in the guild
+        # Check for custom emoji in the guild
         custom_emoji = discord.utils.get(message.guild.emojis, name=emoji_name)
         
         if custom_emoji:
-            # Custom emoji found, add it
+            # Custom emoji found
             await message.add_reaction(custom_emoji)
         else:
-            # Check if it's a Unicode emoji using the 'emoji' package
-            unicode_emoji = emoji.emojize(f":{emoji_name}:", use_aliases=True)
+            # Try to convert to Unicode emoji
+            unicode_emoji = emoji.emojize(f":{emoji_name}:", language="alias")
             
             if unicode_emoji != f":{emoji_name}:":
                 await message.add_reaction(unicode_emoji)
             else:
                 await message.channel.send(f"Emoji `{emoji_input}` not found as custom or Unicode emoji.")
     else:
-        # Emoji input isn't in ":name:" format, treat it as Unicode directly
+        # Add as a direct emoji (Unicode or custom format)
         await message.add_reaction(emoji_input)
 
 
