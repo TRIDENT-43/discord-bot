@@ -92,11 +92,11 @@ async def xpno(ctx):
 
 @bot.command()
 async def xpskl(ctx):
-    await process_xp_command(ctx, "1️⃣", 1, "")
+    await process_xp_command(ctx, "1️⃣", 1, ":ocean:")
 
 @bot.command()
 async def xpsty(ctx):
-    await process_xp_command(ctx, "2️⃣", 2, "3️⃣")
+    await process_xp_command(ctx, "2️⃣", 2, "")
 
 @bot.command()
 async def xpfnd(ctx):
