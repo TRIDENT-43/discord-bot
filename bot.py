@@ -57,7 +57,7 @@ def save_data():
         print(f"Error saving data: {e}")
 
 def updateList(userid, messageid, xptoadd, timestamp):
-    userNameList.append(int(userid))
+    userNameList.append(str(userid))
     messageIDList.append(str(messageid.id if isinstance(messageid, discord.Message) else messageid))
     xpFromMessage.append(int(xptoadd))
     commandUseTimestamp.append(str(timestamp))
