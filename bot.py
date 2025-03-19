@@ -111,7 +111,7 @@ async def process_xp_command(ctx, emoji, xp):
         first_line = original_message.content.split("\n")[0].strip()
         
         # Check if the first line starts with '@'
-        if first_line.startswith("@"):
+        if 1 == 1:
             target_identifier = first_line  # Store the "@Username" as the identifier
 
             # Delete the bot command reply
