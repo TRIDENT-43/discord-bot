@@ -218,7 +218,7 @@ async def test(ctx,):
     await ctx.send("bot is online!")
 
 @bot.command()
-async def exportuser(ctx, username: int):
+async def exportuser(ctx, username: str):
     # This is a list that temporarily stores the other list's index numbers for the specific data requested for export
     indexListToExport = [i for i, x in enumerate(userNameList) if x == username]
     
