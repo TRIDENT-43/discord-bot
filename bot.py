@@ -24,14 +24,14 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
 
 # Raw Data Lists
-userIDList = []
+userNameList = []
 messageIDList = []
 xpFromMessage = []
 commandUseTimestamp = []
 
 def clearRawData(securitycode: str):
     if securitycode == "DELETE":
-        userIDList.clear()
+        userNameList.clear()
         messageIDList.clear()
         xpFromMessage.clear()
         commandUseTimestamp.clear()
@@ -48,8 +48,8 @@ def save_data():
         sheet.append(["User ID", "Message ID", "XP", "Timestamp"])
         
         # Write data
-        for i in range(len(userIDList)):
-            sheet.append([userIDList[i], messageIDList[i], xpFromMessage[i], commandUseTimestamp[i]])
+        for i in range(len(userNameList)):
+            sheet.append([userNameList[i], messageIDList[i], xpFromMessage[i], commandUseTimestamp[i]])
         
         workbook.save(SAVE_PATH)
         print("Data saved successfully.")
@@ -57,7 +57,7 @@ def save_data():
         print(f"Error saving data: {e}")
 
 def updateList(userid, messageid, xptoadd, timestamp):
-    userIDList.append(int(userid))
+    userNameList.append(int(userid))
     messageIDList.append(messageid.id if isinstance(messageid, discord.Message) else messageid)
     xpFromMessage.append(int(xptoadd))
     commandUseTimestamp.append(str(timestamp))
@@ -86,124 +86,54 @@ async def mansave(ctx,):
 
 
 @bot.command()
-async def xpno(ctx,):
-
-    #vars
-    emoji = "0️⃣"
-    xp = 0
-
-    # Check if the user is replying to a message
-    if ctx.message.reference:
-        # Get the message that is being replied to
-        original_message = await ctx.fetch_message(ctx.message.reference.message_id)
-        
-        # get userid of the original message sender
-        original_user_id = original_message.author.id
-
-        # delete the bot command reply
-        await ctx.message.delete()
-
-        # Add the reaction (emoji) to the original message
-        await original_message.add_reaction(emoji)
-
-        updateList(original_user_id, original_message, xp, (time.ctime()))
-
-    else:
-        await ctx.send("You need to reply to a message first!")
-
-
+async def xpno(ctx):
+    await process_xp_command(ctx, "0️⃣", 0)
+    
 
 @bot.command()
-async def xpskl(ctx,):
-
-    #vars
-    emoji = "1️⃣"
-    xp = 1
-
-    # Check if the user is replying to a message
-    if ctx.message.reference:
-        # Get the message that is being replied to
-        original_message = await ctx.fetch_message(ctx.message.reference.message_id)
-        
-        # get userid of the original message sender
-        original_user_id = original_message.author.id
-
-        # delete the bot command reply
-        await ctx.message.delete()
-
-        # Add the reaction (emoji) to the original message
-        await original_message.add_reaction(emoji)
-
-        updateList(original_user_id, original_message, xp, (time.ctime()))
-
-    else:
-        await ctx.send("You need to reply to a message first!")
-
+async def xpskl(ctx):
+    await process_xp_command(ctx, "1️⃣", 1)
 
 @bot.command()
-async def xpsty(ctx,):
-
-    #vars
-    emoji = "2️⃣"
-    xp = 2
-
-    # Check if the user is replying to a message
-    if ctx.message.reference:
-        # Get the message that is being replied to
-        original_message = await ctx.fetch_message(ctx.message.reference.message_id)
-        
-        # get userid of the original message sender
-        original_user_id = original_message.author.id
-
-        # delete the bot command reply
-        await ctx.message.delete()
-
-
-
-
-        # Add the reaction (emoji) to the original message
-        await original_message.add_reaction(emoji)
-
-        updateList(original_user_id, original_message, xp, (time.ctime()))
-
-    else:
-        await ctx.send("You need to reply to a message first!")
-
+async def xpsty(ctx):
+    await process_xp_command(ctx, "2️⃣", 2)
 
 @bot.command()
-async def xpfnd(ctx,):
+async def xpfnd(ctx):
+    await process_xp_command(ctx, "3️⃣", 3)
 
-    #vars
-    emoji = "3️⃣"
-    xp = 3
-
+async def process_xp_command(ctx, emoji, xp):
     # Check if the user is replying to a message
     if ctx.message.reference:
-        # Get the message that is being replied to
         original_message = await ctx.fetch_message(ctx.message.reference.message_id)
         
-        # get userid of the original message sender
-        original_user_id = original_message.author.id
+        # Extract the first line of the original message
+        first_line = original_message.content.split("\n")[0].strip()
+        
+        # Check if the first line starts with '@'
+        if first_line.startswith("@"):
+            target_identifier = first_line  # Store the "@Username" as the identifier
 
-        # delete the bot command reply
-        await ctx.message.delete()
+            # Delete the bot command reply
+            await ctx.message.delete()
 
+            # Add the reaction (emoji) to the original message
+            await original_message.add_reaction(emoji)
 
-
-
-        # Add the reaction (emoji) to the original message
-        await original_message.add_reaction(emoji)
-
-        updateList(original_user_id, original_message, xp, (time.ctime()))
+            # Store the extracted identifier instead of a numeric user ID
+            updateList(target_identifier, original_message, xp, time.ctime())
+        else:
+            await ctx.send("The first line of the replied message must start with '@' to identify a user!")
 
     else:
         await ctx.send("You need to reply to a message first!")
+
 
 
 #exports all raw data from the 4 main lists
 @bot.command()
 async def exportraw(ctx,):
-    await ctx.send(f"User id: {userIDList} OG message id {messageIDList} xp: {xpFromMessage} timestamp: {commandUseTimestamp}")
+    await ctx.send(f"User id: {userNameList} OG message id {messageIDList} xp: {xpFromMessage} timestamp: {commandUseTimestamp}")
 
 #clears raw data from the 4 main lists 
 
@@ -250,13 +180,13 @@ async def test(ctx,):
 @bot.command()
 async def exportuser(ctx, userid: int):
     # This is a list that temporarily stores the other list's index numbers for the specific data requested for export
-    indexListToExport = [i for i, x in enumerate(userIDList) if x == userid]
+    indexListToExport = [i for i, x in enumerate(userNameList) if x == userid]
     
     exportdata = []  # Initialize the list outside the loop to store the results
     
     # Iterate over the indexes in indexListToExport
     for i in indexListToExport:
-        # Append the data from both userIDList and xpFromMessage using the index
+        # Append the data from both userNameList and xpFromMessage using the index
         exportdata.append({
             'xp': xpFromMessage[i], 
             'timestamp': commandUseTimestamp[i]
@@ -276,8 +206,8 @@ async def exportuser(ctx, userid: int):
 async def exportalluser(ctx):
     # Group the data by user ID
     data_by_user = {}
-    for i in range(len(userIDList)):
-        user_id = userIDList[i]
+    for i in range(len(userNameList)):
+        user_id = userNameList[i]
         xp = xpFromMessage[i]
         timestamp = commandUseTimestamp[i]
         if user_id not in data_by_user:
