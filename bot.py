@@ -87,38 +87,43 @@ async def mansave(ctx,):
 
 @bot.command()
 async def xpno(ctx):
-    await process_xp_command(ctx, "0️⃣", 0)
+    await process_xp_command(ctx, "0️⃣", 0, "")
     
 
 @bot.command()
 async def xpskl(ctx):
-    await process_xp_command(ctx, "1️⃣", 1)
+    await process_xp_command(ctx, "1️⃣", 1, "")
 
 @bot.command()
 async def xpsty(ctx):
-    await process_xp_command(ctx, "2️⃣", 2)
+    await process_xp_command(ctx, "2️⃣", 2, "3️⃣")
 
 @bot.command()
 async def xpfnd(ctx):
-    await process_xp_command(ctx, "3️⃣", 3)
+    await process_xp_command(ctx, "3️⃣", 3, "")
 
-async def process_xp_command(ctx, emoji, xp):
+async def process_xp_command(ctx, emoji1, xp, emoji2):
     # Check if the user is replying to a message
     if ctx.message.reference:
         original_message = await ctx.fetch_message(ctx.message.reference.message_id)
         
         # Extract the first line of the original message
         first_line = original_message.content.split("\n")[0].strip()
-        
-        # Check if the first line starts with '@'
-        if 1 == 1:
+
+        if 1 == 1: 
             target_identifier = first_line  # Store the "@Username" as the identifier
 
             # Delete the bot command reply
             await ctx.message.delete()
 
-            # Add the reaction (emoji) to the original message
-            await original_message.add_reaction(emoji)
+            # Resolve emojis (check if they are custom emojis in the server)
+            emoji1 = get_emoji(ctx, emoji1)
+            emoji2 = get_emoji(ctx, emoji2) if emoji2 else None
+
+            # Add the reaction(s)
+            await original_message.add_reaction(emoji1)
+            if emoji2:
+                await original_message.add_reaction(emoji2)
 
             # Store the extracted identifier instead of a numeric user ID
             updateList(target_identifier, original_message, xp, time.ctime())
@@ -127,6 +132,16 @@ async def process_xp_command(ctx, emoji, xp):
 
     else:
         await ctx.send("You need to reply to a message first!")
+
+# Function to check for custom emojis in the server
+def get_emoji(ctx, emoji_name):
+    # Search for a custom emoji in the server
+    for guild_emoji in ctx.guild.emojis:
+        if guild_emoji.name == emoji_name:
+            return guild_emoji  # Return the custom emoji object
+
+    return emoji_name  # Default to Unicode emoji if not found
+
 
 
 
